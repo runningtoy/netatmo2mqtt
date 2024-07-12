@@ -2,6 +2,10 @@
 
 Get the public weaether measures from  NetAtmo  and send it to your MQTT broker -> based on [https://github.com/seblucas/netatmo2mqtt](https://github.com/seblucas/netatmo2mqtt)
 
+publish to sepearte topics for each value under ```netatmo\``` 
+
+you need to change the coordinates in Line 154 -> ```getNetAtmoPublicWeather(accessToken, lat_ne,lon_ne,lat_sw,lon_sw)```
+
 ----------------------------
 
 # Why yet another tool around NetAtmo API
