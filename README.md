@@ -1,6 +1,8 @@
 # netatmo2mqtt
 
-Get the measures from your NetAtmo thermostat and send it to your MQTT broker
+Get the public weaether measures from  NetAtmo  and send it to your MQTT broker -> based on [https://github.com/seblucas/netatmo2mqtt](https://github.com/seblucas/netatmo2mqtt)
+
+----------------------------
 
 # Why yet another tool around NetAtmo API
 
@@ -56,8 +58,7 @@ The secrets can also be set with environment variables, see the help for more de
 
 ```bash
 seb@minus ~/src/netatmo2mqtt (git)-[master] # ./netatmo2MQTT.py --help
-usage: netatmo2MQTT.py [-h] -a NACLIENTSECRET -c NACLIENTID -r NAREFRESHTOKEN -l LATESTREADINGURL -x LATESTREADINGREGEX [-m HOST] [-n] [-o PREVIOUSFILENAME] [-u UPDATEDREFRESHFILENAME] [-s TOPIC] [-t TOPIC]
-                       [-T TOPIC] [-v]
+usage: netatmo2MQTT.py [-h] -a NACLIENTSECRET -c NACLIENTID -r NAREFRESHTOKEN [-u UPDATEDREFRESHFILENAME] [-t TOPIC] [-T TOPIC] [-v]
 
 Read current temperature and setpoint from NetAtmo API and send them to a MQTT broker.
 
@@ -69,19 +70,11 @@ options:
                         NetAtmo Client ID / Can also be read from NETATMO_CLIENT_ID en var. (default: None)
   -r NAREFRESHTOKEN, --refresh-token NAREFRESHTOKEN
                         NetAtmo Refresh Token / Can also be read from NETATMO_REFRESH_TOKEN en var. (default: None)
-  -l LATESTREADINGURL, --latest LATESTREADINGURL
-                        Url with latest reading timestamp already stored. (default: None)
-  -x LATESTREADINGREGEX, --regex LATESTREADINGREGEX
-                        Regular expression to get latest reading time from url. (default: None)
-  -m HOST, --mqtt-host HOST
+    -m HOST, --mqtt-host HOST
                         Specify the MQTT host to connect to. (default: 127.0.0.1)
   -n, --dry-run         No data will be sent to the MQTT broker. (default: False)
-  -o PREVIOUSFILENAME, --last-time PREVIOUSFILENAME
-                        The file where the last timestamp coming from NetAtmo API will be saved (default: /tmp/netatmo_last)
   -u UPDATEDREFRESHFILENAME, --updated-refresh UPDATEDREFRESHFILENAME
                         The file where the last refresh token coming from NetAtmo API will be saved (default: /tmp/netatmo_last_refresh)
-  -s TOPIC, --topic-setpoint TOPIC
-                        The MQTT topic on which to publish the message with the current setpoint temperature (if it was a success) (default: sensor/setpoint)
   -t TOPIC, --topic TOPIC
                         The MQTT topic on which to publish the message (if it was a success). (default: sensor/mainroom)
   -T TOPIC, --topic-error TOPIC
@@ -91,33 +84,7 @@ options:
 
 ## Other things to know
 
-I personaly use cron to start this program so as I want to keep the latest timestamp received from the API, I store it by default in `/tmp/netatmo_last` (you can change it through a command line parameter. You can also initialize it with an URL (check the argument `-l`).
-
-## Docker
-
-I added a sample Dockerfile, I personaly use it with a `docker-compose.yml` like this one :
-
-```yml
-version: '3'
-
-services:
-  netatmo2mqtt:
-    build: https://github.com/seblucas/netatmo2mqtt.git
-    image: netatmo-python3-cron:latest
-    restart: always
-    environment:
-      NETATMO_CLIENT_SECRET: XXX
-      NETATMO_CLIENT_ID: XXX
-      NETATMO_REFRESH_TOKEN: XXX
-      CRON_STRINGS: "46 * * * * netatmo2MQTT.py -m mosquitto -t sensor/netatmo"
-      CRON_LOG_LEVEL: 8
-```
-
-
-# Limits
-
- * This program only handles Thermostat for now (PR welcome for other sensors)
- * Won't work if you have more than one thermostat (again PR welcome)
+I personaly use cron to start this program 
 
 # License
 
