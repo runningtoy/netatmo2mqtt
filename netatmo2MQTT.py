@@ -1,10 +1,5 @@
 #!/usr/bin/python3
 
-# 2023-07 : ph.larduinat@wanadoo.fr
-# Library 3.2.0
-
-# Direct call of Netatmo API with authentication token
-# Return a dictionary of body of Netatmo response
 
 import lnetatmo
 from geopy.distance import distance
@@ -51,19 +46,15 @@ def process_elements(json_data,center_lat, center_lon, max_distance=3):
     co=0
     total_temparature=0
     for element in json_data:
-        #print(f'ID: {element["_id"]}')
         station_lon, station_lat = element['place']['location']
         station_distance = geodesic((center_lat, center_lon), (station_lat, station_lon)).km
-        #print(f' station_distance: {station_distance}')
         if(station_distance<max_distance):
           try:
             for measure_id, measure in element["measures"].items():
                 if "temperature" in measure["type"]:
                     first_res_value = list(measure["res"].values())[0][0]
                     total_temparature=total_temparature+first_res_value
-                    #print(f'Erster Temperaturwert: {first_res_value}')
                     co=co+1
-            #print('\n')
           except (TypeError, KeyError):
                 pass
     publish_mqtt(total_temparature/co)
@@ -72,7 +63,6 @@ def process_elements(json_data,center_lat, center_lon, max_distance=3):
 
 def get_average_temperature(center_latitude, center_longitude, radius=3):   
   try:
-    #/tmp/netatmo_last_refresh
     authorization = lnetatmo.ClientAuth(credentialFile="/tmp/credentials.json")
     rawData = lnetatmo.rawAPI(authorization, "getpublicdata",get_square_parameters(center_latitude, center_longitude,2*radius))
     process_elements(rawData,center_latitude, center_longitude,radius)
