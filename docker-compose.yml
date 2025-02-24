@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  netatmo2mqtt:
+    build:
+          context: .
+          dockerfile: /dockerNetatmoMQTT/Dockerfile
+    restart: always
+    volumes:
+          - /dockerNetatmoMQTT/tmp:/tmp
+    environment:
+      CRON_STRINGS: "*/2 * * * * netatmo2MQTT.py"
+      CRON_LOG_LEVEL: 8
